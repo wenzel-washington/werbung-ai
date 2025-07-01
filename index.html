@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>werbung.ai - Democratizing Advertising</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Orbitron:wght@700&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* --- Part 1: Design System Tokens (from JSON Profile) --- */
+        :root {
+            /* Colors */
+            --color-background-primary: #000000;
+            --color-background-surface: #141414;
+            --color-accent-primary: #E50914;
+            --color-text-primary: #FFFFFF;
+            --color-text-secondary: #A9A9A9;
+            --color-border: #333;
+
+            /* Typography */
+            --font-family-headline: 'Orbitron', sans-serif;
+            --font-family-body: 'Inter', sans-serif;
+            --font-family-monospace: 'Roboto Mono', monospace;
+            --font-weight-regular: 400;
+            --font-weight-bold: 700;
+
+            /* Sizing & Spacing */
+            --sizing-radius-sm: 4px;
+            --sizing-radius-md: 8px;
+            --spacing-unit: 8px;
+            --spacing-2: calc(var(--spacing-unit) * 2); /* 16px */
+            --spacing-3: calc(var(--spacing-unit) * 3); /* 24px */
+            --spacing-4: calc(var(--spacing-unit) * 4); /* 32px */
+            --spacing-5: calc(var(--spacing-unit) * 5); /* 40px */
+
+            /* Motion */
+            --motion-duration-short: 300ms;
+            --motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Shadows */
+            --shadows-glow: 0 0 12px rgba(229, 9, 20, 0.5);
+        }
+
+        /* --- Part 2: Base & Global Styles --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Prevents scrollbars from the 3D transform */
+        }
+
+        body {
+            background-color: var(--color-background-primary);
+            font-family: var(--font-family-body);
+            color: var(--color-text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Part 3: Page Structure & Layout --- */
+        .landing-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 2000px; /* Further increased perspective */
+        }
+
+        .background-grid-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            transform-style: preserve-3d;
+            animation: fadeInGrid 2.5s var(--motion-easing-standard) forwards;
+        }
+        
+        @keyframes fadeInGrid {
+            from {
+                opacity: 0;
+                transform: rotateX(70deg) rotateZ(15deg) translateY(20%);
+            }
+            to {
+                opacity: 1;
+                /* Final, aggressive adjustment to ensure full coverage */
+                transform: rotateX(48deg) rotateZ(15deg) translateY(-60%);
+            }
+        }
+
+        .background-grid {
+            /* Using CSS Columns for a masonry-like layout */
+            column-width: 300px;
+            column-gap: var(--spacing-2);
+            width: 160%; /* Made grid wider to ensure coverage */
+            transform: translateX(-27%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--spacing-4);
+            max-width: 800px;
+            width: 90%;
+            /* Removed the background gradient */
+        }
+
+        /* --- Part 4: Component Styling --- */
+
+        /* Video Thumbnail */
+        .video-thumbnail {
+            width: 100%;
+            margin-bottom: var(--spacing-2);
+            break-inside: avoid; /* Prevents items from breaking across columns */
+            border-radius: var(--sizing-radius-sm);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--motion-duration-short) var(--motion-easing-standard);
+            transform: scale(1);
+        }
+
+        .video-thumbnail.landscape {
+            aspect-ratio: 16 / 9;
+        }
+        
+        .video-thumbnail.portrait {
+            aspect-ratio: 9 / 16;
+        }
+        
+        .video-thumbnail::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            transition: background-color var(--motion-duration-short) var(--motion-easing-standard);
+        }
+
+        .video-thumbnail.dimmed {
+            filter: grayscale(1);
+        }
+
+        .video-thumbnail:not(.active-video):hover {
+            transform: scale(1.05);
+            filter: grayscale(0);
+            box-shadow: var(--shadows-glow);
+            z-index: 5;
+        }
+
+        .video-thumbnail:not(.active-video):hover::after {
+            background-color: rgba(0, 0, 0, 0);
+        }
+        
+        .video-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; /* Hidden by default */
+        }
+
+        .video-thumbnail.active-video {
+            filter: grayscale(0);
+        }
+
+        .video-thumbnail.active-video::after {
+             background-color: rgba(0, 0, 0, 0);
+        }
+        
+        .video-thumbnail.active-video video {
+            display: block;
+        }
+
+
+        /* Headline Elements */
+        .brand-logo {
+            max-height: 240px; /* Made logo twice as big again */
+            margin-bottom: var(--spacing-3);
+        }
+
+        .tagline {
+            font-family: var(--font-family-body);
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            font-weight: var(--font-weight-regular);
+            line-height: 1.4;
+            text-shadow: 1px 1px 8px rgba(0,0,0,0.8);
+            max-width: 650px;
+            margin-bottom: var(--spacing-4);
+        }
+        
+        .dream-question {
+            font-family: var(--font-family-body);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-secondary);
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            animation: pulseGlow 4s infinite ease-in-out;
+            margin-bottom: var(--spacing-2); /* Moved closer to prompt */
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                text-shadow: 1px 1px 8px rgba(0,0,0,0.7), 0 0 5px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                text-shadow: 1px 1px 8px rgba(0,0,0,0.7), 0 0 20px rgba(255, 255, 255, 0.3);
+            }
+            100% {
+                text-shadow: 1px 1px 8px rgba(0,0,0,0.7), 0 0 5px rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Typewriter Prompt */
+        .typewriter-prompt {
+            font-family: var(--font-family-monospace);
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            background-color: var(--color-background-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--sizing-radius-md);
+            padding: var(--spacing-2) var(--spacing-3);
+            width: 100%;
+            max-width: 600px;
+            text-align: left;
+            min-height: 80px; /* Increased min-height to accommodate two lines */
+            margin-bottom: var(--spacing-4);
+            display: flex; /* Added to vertically center text */
+            align-items: center; /* Added to vertically center text */
+        }
+
+        .typewriter-prompt .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2rem;
+            background-color: var(--color-accent-primary);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            from, to { background-color: transparent }
+            50% { background-color: var(--color-accent-primary); }
+        }
+
+        /* Email Signup Form */
+        .signup-form {
+            display: flex;
+            gap: var(--spacing-2);
+            width: 100%;
+            max-width: 600px; /* Match the typewriter prompt width */
+        }
+
+        .signup-form .email-input {
+            flex-grow: 1; /* Allows the input to take up the remaining space */
+            font-family: var(--font-family-body);
+            font-size: 1rem;
+            background-color: var(--color-background-surface);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+            border-radius: var(--sizing-radius-md);
+            padding: var(--spacing-2);
+            transition: all var(--motion-duration-short) var(--motion-easing-standard);
+            min-width: 250px;
+        }
+
+        .signup-form .email-input::placeholder {
+            color: var(--color-text-secondary);
+        }
+
+        .signup-form .email-input:focus {
+            outline: none;
+            border-color: var(--color-accent-primary);
+            box-shadow: var(--shadows-glow);
+        }
+
+        .signup-form .signup-button {
+            font-family: var(--font-family-body);
+            font-weight: var(--font-weight-bold);
+            font-size: 1rem;
+            background-color: var(--color-accent-primary);
+            color: var(--color-text-primary);
+            border: 2px solid transparent;
+            border-radius: var(--sizing-radius-md);
+            padding: var(--spacing-2) var(--spacing-4);
+            cursor: pointer;
+            transition: all var(--motion-duration-short) var(--motion-easing-standard);
+        }
+
+        .signup-form .signup-button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="landing-container">
+        <!-- The 3D background grid of video thumbnails -->
+        <div class="background-grid-wrapper">
+            <div class="background-grid" id="grid-container">
+                <!-- Thumbnails will be generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- The centered foreground content -->
+        <div class="hero-content">
+            <!-- The user's uploaded logo is placed here -->
+            <img src="https://i.imgur.com/UvEVTaT.png" alt="Werbung.ai Logo" class="brand-logo"
+                 onerror="this.onerror=null;this.src='https://placehold.co/200x50/000000/FFFFFF?text=Werbung.ai';">
+            
+            <h1 class="sr-only">Werbung.ai</h1> <!-- For screen readers -->
+
+            <h3 class="tagline">Wir demokratisieren Werbung.<br> Erstellen sie ihre innerhalb von Sekunden.</h3>
+            <p class="dream-question">Wovon träumen Sie?</p>
+
+            <div class="typewriter-prompt">
+                <span id="typewriter-text"></span><span class="cursor"></span>
+            </div>
+
+            <form class="signup-form" onsubmit="event.preventDefault(); alert('Thank you for signing up!');">
+                <input type="email" class="email-input" placeholder="Enter your email address" required>
+                <button type="submit" class="signup-button">Start Dreaming</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- Typewriter Effect Logic ---
+            const typewriterElement = document.getElementById('typewriter-text');
+            const prompts = [
+                "A lion riding a bicycle through New York...",
+                "A cinematic shot of a coffee bean falling into milk...",
+                "A sports car made of liquid gold driving on a rainbow...",
+                "A photorealistic dog wearing sunglasses and a leather jacket...",
+                "An orchestra of robots playing classical music on Mars..."
+            ];
+            let currentPromptIndex = 0;
+            let currentCharIndex = 0;
+            let isDeleting = false;
+            const typingSpeed = 80;
+            const deletingSpeed = 50;
+            const delayBetweenPrompts = 2000;
+
+            function type() {
+                const currentPrompt = prompts[currentPromptIndex];
+                let displayedText = '';
+
+                if (isDeleting) {
+                    displayedText = currentPrompt.substring(0, currentCharIndex - 1);
+                    currentCharIndex--;
+                } else {
+                    displayedText = currentPrompt.substring(0, currentCharIndex + 1);
+                    currentCharIndex++;
+                }
+
+                typewriterElement.textContent = displayedText;
+
+                if (!isDeleting && currentCharIndex === currentPrompt.length) {
+                    isDeleting = true;
+                    setTimeout(type, delayBetweenPrompts);
+                } else if (isDeleting && currentCharIndex === 0) {
+                    isDeleting = false;
+                    currentPromptIndex = (currentPromptIndex + 1) % prompts.length;
+                    setTimeout(type, 500);
+                } else {
+                    setTimeout(type, isDeleting ? deletingSpeed : typingSpeed);
+                }
+            }
+            
+            // --- Background Grid Generation & Cycling Logic ---
+            const gridContainer = document.getElementById('grid-container');
+            const totalThumbnails = 60; // Increased thumbnails for better coverage
+            let allThumbnails = [];
+            const videoUrls = [
+                'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+                'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+                'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+                'https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4'
+            ];
+            const imageUrls = {
+                landscape: [
+                    'https://placehold.co/640x360/333/ccc?text=Ad+1',
+                    'https://placehold.co/640x360/444/ccc?text=Viral',
+                    'https://placehold.co/640x360/555/ccc?text=Commercial',
+                ],
+                portrait: [
+                    'https://placehold.co/360x640/222/ccc?text=Short',
+                    'https://placehold.co/360x640/666/ccc?text=Clip',
+                    'https://placehold.co/360x640/111/ccc?text=Concept'
+                ]
+            };
+
+            // Function to activate a thumbnail
+            function activateThumbnail(thumb) {
+                thumb.classList.remove('dimmed');
+                thumb.classList.add('active-video');
+                thumb.style.backgroundImage = 'none';
+
+                const video = document.createElement('video');
+                video.src = videoUrls[Math.floor(Math.random() * videoUrls.length)];
+                video.autoplay = true;
+                video.loop = true;
+                video.muted = true;
+                video.playsInline = true;
+                
+                thumb.innerHTML = ''; // Clear any previous content
+                thumb.appendChild(video);
+            }
+
+            // Function to deactivate a thumbnail
+            function deactivateThumbnail(thumb) {
+                thumb.classList.remove('active-video');
+                thumb.classList.add('dimmed');
+                thumb.innerHTML = ''; // Remove video
+                thumb.style.backgroundImage = thumb.dataset.bg;
+            }
+
+            // Function to cycle which videos are active
+            function cycleActiveVideos() {
+                const currentActive = document.querySelectorAll('.active-video');
+                currentActive.forEach(deactivateThumbnail);
+
+                let newActiveIndexes = [];
+                while (newActiveIndexes.length < 4) {
+                    const randomIndex = Math.floor(Math.random() * allThumbnails.length);
+                    if (!newActiveIndexes.includes(randomIndex)) {
+                        newActiveIndexes.push(randomIndex);
+                    }
+                }
+
+                newActiveIndexes.forEach(index => {
+                    activateThumbnail(allThumbnails[index]);
+                });
+            }
+
+            // Initial grid creation
+            for (let i = 0; i < totalThumbnails; i++) {
+                const thumb = document.createElement('div');
+                thumb.classList.add('video-thumbnail', 'dimmed');
+                
+                const isLandscape = Math.random() > 0.25;
+                let randomImageUrl;
+
+                if (isLandscape) {
+                    thumb.classList.add('landscape');
+                    randomImageUrl = imageUrls.landscape[Math.floor(Math.random() * imageUrls.landscape.length)];
+                } else {
+                    thumb.classList.add('portrait');
+                    randomImageUrl = imageUrls.portrait[Math.floor(Math.random() * imageUrls.portrait.length)];
+                }
+
+                thumb.dataset.bg = `url(${randomImageUrl})`;
+                thumb.style.backgroundImage = thumb.dataset.bg;
+                
+                gridContainer.appendChild(thumb);
+                allThumbnails.push(thumb);
+            }
+
+            // Start the initial cycle and the typewriter
+            cycleActiveVideos();
+            type();
+
+            // Set the interval to cycle videos every 6 seconds
+            setInterval(cycleActiveVideos, 6000);
+        });
+    </script>
+
+</body>
+</html>
