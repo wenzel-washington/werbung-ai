@@ -191,7 +191,7 @@
 
         /* Headline Elements */
         .brand-logo {
-            max-height: 240px; /* Made logo twice as big again */
+            max-height: 240px; 
             margin-bottom: var(--spacing-3);
         }
 
@@ -319,6 +319,35 @@
             border-width: 0;
         }
 
+        /* --- Part 5: Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .background-grid {
+                column-width: 200px; /* Smaller tiles for mobile */
+                transform: translateX(-15%);
+            }
+
+            .brand-logo {
+                max-height: 160px; /* Smaller logo on mobile */
+            }
+
+            .tagline {
+                font-size: clamp(1rem, 4vw, 1.2rem);
+            }
+
+            .dream-question {
+                font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+            }
+
+            .typewriter-prompt {
+                min-height: 70px;
+                font-size: 1rem;
+            }
+
+            .signup-form {
+                flex-direction: column; /* Stack form elements vertically */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -339,7 +368,7 @@
             
             <h1 class="sr-only">Werbung.ai</h1> <!-- For screen readers -->
 
-            <h3 class="tagline">Wir demokratisieren Werbung.<br> Erstellen sie ihre innerhalb von Sekunden.</h3>
+            <h3 class="tagline">Wir demokratisieren Werbung.<br> Erstellen Sie Ihre Traum-Werbung innerhalb von ein paar Sekunden.</h3>
             <p class="dream-question">Wovon träumen Sie?</p>
 
             <div class="typewriter-prompt">
@@ -452,7 +481,7 @@
                 currentActive.forEach(deactivateThumbnail);
 
                 let newActiveIndexes = [];
-                while (newActiveIndexes.length < 6) {
+                while (newActiveIndexes.length < 4) {
                     const randomIndex = Math.floor(Math.random() * allThumbnails.length);
                     if (!newActiveIndexes.includes(randomIndex)) {
                         newActiveIndexes.push(randomIndex);
